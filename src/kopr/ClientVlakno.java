@@ -14,11 +14,9 @@ public class ClientVlakno implements Runnable {
     private final int poradie;
     private InputStream inStream;
     private final int velkost = 10000;
-    private int chunks;
     private byte[] data;
     private RandomAccessFile raf;
     private int offset;
-    private int prislo;
     private final Long velkostSuboru;
     private int castSuboru;
     private final int[] prijate;
@@ -43,23 +41,35 @@ public class ClientVlakno implements Runnable {
             raf = new RandomAccessFile(SUBOR, "rw");
             inStream = soket.getInputStream();
             castSuboru = (int) Math.ceil((double) velkostSuboru / pocetVlakien);
-            chunks = (int) Math.ceil((double) castSuboru / velkost);
             offset = castSuboru * poradie;
             raf.seek(offset);
-            data = new byte[velkost];
-            while ((prislo = (inStream.read(data))) > 0) {
+           
+            while (true) {
+                data = new byte[velkost];
+                int prislo = inStream.read(data);
+                if ( prislo <= 0){
+                    break;
+                }                   
                 raf.write(data, 0, prislo);
                 offset = offset + prislo;
                 prijate[poradie] += prislo;
-                System.out.println("Soket " + poradie + " prijal " + prislo);
+                //System.out.println("Soket " + poradie + " prijal " + prislo);
                 if (Thread.currentThread().isInterrupted()) {
                     zrus();
-                }
-            }           
+                }             
+            }       
         } catch (FileNotFoundException ex) {
             Logger.getLogger(ClientVlakno.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             System.err.println("IO Exception !!!");
+        }finally{
+            try {
+                raf.close();
+                inStream.close();
+                soket.close();             
+            } catch (IOException ex) {
+                Logger.getLogger(ClientVlakno.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
 
     }
@@ -68,12 +78,13 @@ public class ClientVlakno implements Runnable {
         try {
             raf.close();
             soket.close();
-            
+            String sprava = new String(Integer.toString(offset));
+            spravy[poradie] = sprava;
             Thread.currentThread().interrupt();
             System.out.println("Soket " + poradie + "skoncil na " + offset );
             cdl.countDown();
         } catch (IOException ex) {
-            System.err.println("IO Exception !!!");
+            System.err.println("IO Exception TAOT ?  !!!");
         }
         
     }

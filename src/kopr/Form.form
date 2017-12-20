@@ -24,21 +24,27 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
-              <EmptySpace min="-2" pref="65" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="startButton" max="32767" attributes="0"/>
-                  <Component id="pocetSoketovLabel" max="32767" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="ProgressBar" max="32767" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="-2" pref="65" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="pauzaButton" max="32767" attributes="0"/>
+                          <Component id="pocetSoketovLabel" max="32767" attributes="0"/>
+                          <Component id="startButton" alignment="1" max="32767" attributes="0"/>
+                      </Group>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="pocetSoketovTextField" max="32767" attributes="0"/>
+                          <Component id="stopButton" alignment="0" max="32767" attributes="0"/>
+                          <Component id="pokracujButton" alignment="0" pref="79" max="32767" attributes="0"/>
+                      </Group>
+                      <EmptySpace min="0" pref="149" max="32767" attributes="0"/>
+                  </Group>
               </Group>
-              <EmptySpace type="separate" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="pocetSoketovTextField" pref="71" max="32767" attributes="0"/>
-                  <Component id="stopButton" max="32767" attributes="0"/>
-              </Group>
-              <EmptySpace pref="167" max="32767" attributes="0"/>
-          </Group>
-          <Group type="102" alignment="0" attributes="0">
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="ProgressBar" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -56,7 +62,12 @@
                   <Component id="startButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="stopButton" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" pref="58" max="-2" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="pauzaButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="pokracujButton" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
               <Component id="ProgressBar" min="-2" max="-2" attributes="0"/>
               <EmptySpace pref="79" max="32767" attributes="0"/>
           </Group>
@@ -73,7 +84,7 @@
     </Component>
     <Component class="javax.swing.JButton" name="startButton">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Start"/>
+        <Property name="text" type="java.lang.String" value="Za&#x10d;ni"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="startButtonActionPerformed"/>
@@ -87,6 +98,22 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="stopButtonActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="pauzaButton">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Preru&#x161;"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="pauzaButtonActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="pokracujButton">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Pokra&#x10d;uj"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="pokracujButtonActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

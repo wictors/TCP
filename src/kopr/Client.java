@@ -33,7 +33,7 @@ public class Client {
     private static ExecutorService exekutor;
     private static CountDownLatch cdl;
     private static Form form;
-   
+    private static ArrayList<String> info = new ArrayList<>();
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
@@ -41,9 +41,28 @@ public class Client {
             public void run() {
                 form = new Form();
                 form.setVisible(true);
-                
+
             }
-        });       
+        });
+    }
+
+    public static Integer citajStav() {
+        if (ZAPISNIK.length() != 0) {
+            try {
+                Scanner scan = new Scanner(ZAPISNIK);
+                while (scan.hasNext()) {               
+                    info.add(scan.next());                                    
+                }
+                String cislo = info.get(info.size()-1);
+                int vysledok = Integer.getInteger(cislo);
+                info.remove(info.size()-1);
+                scan.close();
+                return vysledok;
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return 0;
     }
 
     public static Integer komunikacia(int pocetSoketov) {
@@ -51,14 +70,16 @@ public class Client {
             spravy = new String[pocetSoketov];
             prijate = new int[pocetSoketov];
             Socket komSocket = new Socket(Server.siet, Server.PORT1);
-            OutputStream outStream = komSocket.getOutputStream();
+            OutputStream outStream = komSocket.getOutputStream();    
             String text = Integer.toString(pocetSoketov);
             System.out.println(text);
             byte[] sprava = text.getBytes(StandardCharsets.UTF_8);
             outStream.write(sprava);
             outStream.flush();
+            
+            
             InputStream inStream = komSocket.getInputStream();
-            sprava = new byte[1024];
+            sprava = new byte[10];
             inStream.read(sprava);
             text = new String(sprava, Charset.defaultCharset());
             text = text.trim();
@@ -75,17 +96,18 @@ public class Client {
         sokety = new Socket[pocetVlakien];
         cdl = new CountDownLatch(pocetVlakien);
         exekutor = Executors.newFixedThreadPool(pocetVlakien);
-        for (int i = 0; i < pocetVlakien; i++) {
-            try {
+        try {
+            for (int i = 0; i < pocetVlakien; i++) {
                 sokety[i] = new Socket(Server.siet, Server.PORT2);
                 exekutor.execute(new ClientVlakno(sokety[i], i, pocetVlakien, velkostSuboru, prijate, cdl, SUBOR, spravy));
-            } catch (IOException ex) {
-                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
             }
+        } catch (IOException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
+
     }
-    
-    public static void stop() throws InterruptedException{
+
+    public static void stop() throws InterruptedException {
         exekutor.shutdownNow();
         cdl.await();
         System.out.println("Brana sa otvorila");
@@ -94,12 +116,23 @@ public class Client {
         form.dispose();
         System.exit(0);
     }
-    
-    public static void pauza() throws InterruptedException{
+
+    public static void pauza() throws InterruptedException {
         exekutor.shutdownNow();
         cdl.await();
         System.out.println("Brana sa otvorila");
         exekutor.shutdown();
+        try {
+            PrintWriter writer = new PrintWriter(ZAPISNIK);
+            for (int i = 0; i < spravy.length; i++) {
+                writer.println(spravy[i]);
+            }
+            writer.println(spravy.length);
+            writer.close();
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
 
 }

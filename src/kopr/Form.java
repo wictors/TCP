@@ -68,12 +68,14 @@ public class Form extends javax.swing.JFrame {
         startButton = new javax.swing.JButton();
         ProgressBar = new javax.swing.JProgressBar();
         stopButton = new javax.swing.JButton();
+        pauzaButton = new javax.swing.JButton();
+        pokracujButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         pocetSoketovLabel.setText("Pocet Soketov : ");
 
-        startButton.setText("Start");
+        startButton.setText("Začni");
         startButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 startButtonActionPerformed(evt);
@@ -87,23 +89,41 @@ public class Form extends javax.swing.JFrame {
             }
         });
 
+        pauzaButton.setText("Preruš");
+        pauzaButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                pauzaButtonActionPerformed(evt);
+            }
+        });
+
+        pokracujButton.setText("Pokračuj");
+        pokracujButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                pokracujButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(65, 65, 65)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(startButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(pocetSoketovLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(pocetSoketovTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 71, Short.MAX_VALUE)
-                    .addComponent(stopButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(167, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(ProgressBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(ProgressBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(65, 65, 65)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(pauzaButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(pocetSoketovLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(startButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(pocetSoketovTextField)
+                            .addComponent(stopButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(pokracujButton, javax.swing.GroupLayout.DEFAULT_SIZE, 79, Short.MAX_VALUE))
+                        .addGap(0, 149, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -117,7 +137,11 @@ public class Form extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(startButton)
                     .addComponent(stopButton))
-                .addGap(58, 58, 58)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(pauzaButton)
+                    .addComponent(pokracujButton))
+                .addGap(24, 24, 24)
                 .addComponent(ProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(79, Short.MAX_VALUE))
         );
@@ -142,11 +166,27 @@ public class Form extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_stopButtonActionPerformed
 
+    private void pauzaButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pauzaButtonActionPerformed
+        try {
+            Client.pauza();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Form.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_pauzaButtonActionPerformed
+
+    private void pokracujButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pokracujButtonActionPerformed
+        pocetSoketov = 0;
+        pocetSoketov = Client.citajStav();
+        
+    }//GEN-LAST:event_pokracujButtonActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JProgressBar ProgressBar;
+    private javax.swing.JButton pauzaButton;
     private javax.swing.JLabel pocetSoketovLabel;
     private javax.swing.JTextField pocetSoketovTextField;
+    private javax.swing.JButton pokracujButton;
     private javax.swing.JButton startButton;
     private javax.swing.JButton stopButton;
     // End of variables declaration//GEN-END:variables
