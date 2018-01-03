@@ -3,6 +3,7 @@ package kopr;
 import java.io.*;
 import java.io.OutputStream;
 import java.net.*;
+import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,13 +22,16 @@ public class ServerVlakno implements Runnable {
     private int offset;
     private int castSuboru;
     private final CountDownLatch cdl;
+    private ArrayList<Integer> info;
 
-    public ServerVlakno(Socket soket, int poradie, int pocetVlakien, File subor, CountDownLatch cdl) {
+    public ServerVlakno(Socket soket, int poradie, int pocetVlakien,
+            File subor, CountDownLatch cdl, ArrayList<Integer> info) {
         this.soket = soket;
         this.poradie = poradie;
         this.pocetVlakien = pocetVlakien;
         this.SUBOR = subor;
         this.cdl = cdl;
+        this.info = info;
         
         
     }
@@ -38,7 +42,12 @@ public class ServerVlakno implements Runnable {
             raf = new RandomAccessFile(SUBOR, "r");
             outStream = soket.getOutputStream(); 
             castSuboru = (int) Math.ceil((double) SUBOR.length() / pocetVlakien);
-            offset = castSuboru*poradie;
+            
+            if(info.size() > 1){
+                offset = info.get(poradie+2);
+            }else{          
+                offset = castSuboru * poradie;
+            }
             chunks = (int)Math.ceil((double) castSuboru/velkost);
             raf.seek(offset);
             data = new byte[velkost];

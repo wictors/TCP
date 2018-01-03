@@ -2,6 +2,7 @@ package kopr;
 
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,20 +20,22 @@ public class ClientVlakno implements Runnable {
     private int offset;
     private final Long velkostSuboru;
     private int castSuboru;
-    private final int[] prijate;
     private final String[] spravy;
     private final CountDownLatch cdl;
+    private Priebeh priebeh;
+    private ArrayList<Integer> info;
 
-    public ClientVlakno(Socket soket, int poradie, int pocetVlakien, long velkostSuboru, int[] prijate, CountDownLatch cdl,
-            File file, String[] spravy) {
+    public ClientVlakno(Socket soket, int poradie, int pocetVlakien, long velkostSuboru, CountDownLatch cdl,
+            File file, String[] spravy, Priebeh priebeh, ArrayList<Integer> info) {
         this.soket = soket;
         this.poradie = poradie;
         this.pocetVlakien = pocetVlakien;
         this.velkostSuboru = velkostSuboru;
-        this.prijate = prijate;
+        this.priebeh = priebeh;
         this.cdl = cdl;
         this.SUBOR = file;
         this.spravy = spravy;
+        this.info = info;
     }
 
     @Override
@@ -41,7 +44,11 @@ public class ClientVlakno implements Runnable {
             raf = new RandomAccessFile(SUBOR, "rw");
             inStream = soket.getInputStream();
             castSuboru = (int) Math.ceil((double) velkostSuboru / pocetVlakien);
-            offset = castSuboru * poradie;
+            if(info.size() > 1){
+                offset = info.get(poradie+2);
+            }else{          
+                offset = castSuboru * poradie;
+            }
             raf.seek(offset);
            
             while (true) {
@@ -52,7 +59,7 @@ public class ClientVlakno implements Runnable {
                 }                   
                 raf.write(data, 0, prislo);
                 offset = offset + prislo;
-                prijate[poradie] += prislo;
+                priebeh.zvysPriebeh(prislo);
                 //System.out.println("Soket " + poradie + " prijal " + prislo);
                 if (Thread.currentThread().isInterrupted()) {
                     zrus();
@@ -61,12 +68,12 @@ public class ClientVlakno implements Runnable {
         } catch (FileNotFoundException ex) {
             Logger.getLogger(ClientVlakno.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
-            System.err.println("IO Exception !!!");
+            System.out.println("Vlakno sa uzatvara");
         }finally{
             try {
                 raf.close();
                 inStream.close();
-                soket.close();             
+                soket.close();               
             } catch (IOException ex) {
                 Logger.getLogger(ClientVlakno.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -77,6 +84,7 @@ public class ClientVlakno implements Runnable {
     private void zrus() {
         try {
             raf.close();
+            inStream.close();
             soket.close();
             String sprava = new String(Integer.toString(offset));
             spravy[poradie] = sprava;

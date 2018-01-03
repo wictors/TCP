@@ -1,5 +1,6 @@
 package kopr;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -11,11 +12,19 @@ public class Form extends javax.swing.JFrame {
     private int pocetSoketov = -1;
     private final SwingWorker<Void, Integer> worker;
     private int velkostSuboru;
-    private int[] prijate;
     int sucet = 0;
+    private int progress = 0;
+    Priebeh priebeh;
 
-    public Form() {
+    public Form(boolean prerusenie, int poslane, Priebeh priebeh) {
         initComponents();
+        this.priebeh = priebeh;
+        progress = poslane;
+        if(prerusenie){
+            startButton.setEnabled(false);            
+        }else{
+            pokracujButton.setEnabled(false);
+        }
         worker = new SwingWorker<Void, Integer>() {
             @Override
             protected Void doInBackground() throws Exception {               
@@ -24,17 +33,14 @@ public class Form extends javax.swing.JFrame {
                 });
                 ProgressBar.setMinimum(0);
                 ProgressBar.setMaximum(velkostSuboru);
+                ProgressBar.setValue(progress);
+                priebeh.zvysPriebeh(progress);
                 SwingUtilities.invokeLater(() -> {
-                    Client.prenos(pocetSoketov);
+                    Client.prenos();
                 });
                 
                 while (sucet < velkostSuboru) {
-                    sucet = 0;        
-                    prijate = Client.prijate;
-                    for (int i = 0; i < prijate.length; i++) {
-                        sucet += prijate[i];                       
-                        
-                    }                    
+                    sucet = priebeh.dajPriebeh();
                     publish(sucet);                   
                 }
 
@@ -152,9 +158,7 @@ public class Form extends javax.swing.JFrame {
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
         if (pocetSoketovTextField.getText() != null) {
             pocetSoketov = Integer.parseInt(pocetSoketovTextField.getText());
-            worker.execute();
-            
-
+            worker.execute();           
         }
     }//GEN-LAST:event_startButtonActionPerformed
 
@@ -175,9 +179,7 @@ public class Form extends javax.swing.JFrame {
     }//GEN-LAST:event_pauzaButtonActionPerformed
 
     private void pokracujButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pokracujButtonActionPerformed
-        pocetSoketov = 0;
-        pocetSoketov = Client.citajStav();
-        
+       worker.execute();       
     }//GEN-LAST:event_pokracujButtonActionPerformed
 
 
